@@ -6,6 +6,7 @@ from ciphersuites import *
 from record import *
 from handshake import *
 from alert import *
+from changecipherspec import *
 
 from ext_heartbeat import *
 from ext_statusrequest import *

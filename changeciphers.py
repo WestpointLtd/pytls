@@ -25,11 +25,10 @@ def make_hello():
     return record.bytes
 
 def make_ccs():
-    ccs = '\1'
-
+    ccs = ChangeCipherSpecMessage.create()
     record = TLSRecord.create(content_type=TLSRecord.ChangeCipherSpec,
                               version=TLSRecord.TLS1_0,
-                              message=ccs)
+                              message=ccs.bytes)
 
     return record.bytes
 
