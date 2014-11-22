@@ -12,3 +12,6 @@ class ChangeCipherSpecMessage(object):
         self.bytes = '\1'
 
         return self
+
+    def __len__(self):
+        return len(self.bytes)
