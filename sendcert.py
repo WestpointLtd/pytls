@@ -47,14 +47,6 @@ def make_hello():
     #hexdump(record.bytes)
     return record.bytes
 
-def make_ccs():
-    ccs = '\1'
-
-    record = TLSRecord.create(content_type=TLSRecord.ChangeCipherSpec,
-                              version=TLSRecord.TLS1_0,
-                              message=ccs)
-
-    return record.bytes
 
 def process_response(sock):
 
