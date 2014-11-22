@@ -29,12 +29,14 @@ class TLSRecord(object):
     TLS1_0 = 0x0301
     TLS1_1 = 0x0302
     TLS1_2 = 0x0303
+    TLS1_3 = 0x0304
 
     tls_versions = {
         0x0300: 'SSL3',
         0x0301: 'TLS1_0',
         0x0302: 'TLS1_1',
-        0x0303: 'TLS1_2'
+        0x0303: 'TLS1_2',
+        0x0304: 'TLS1_3'
     }
 
     def __init__(self):
