@@ -79,6 +79,21 @@ class TLSRecord(object):
     def message(self):
         return self.bytes[5:self.message_length()+5]
 
+    def handshake_messages(self):
+        if self.content_type() != self.Handshake:
+            raise Exception('Not a Handshake record')
+
+        messages = []
+
+        # A single handshake record can contain multiple handshake messages
+        processed_bytes = 0
+        while processed_bytes < self.message_length():
+            message = HandshakeMessage.from_bytes(self.message()[processed_bytes:])
+            processed_bytes += message.message_length() + 4
+            messages += [message]
+
+        return messages
+
     def __len__(self):
         return len(self.bytes)
 

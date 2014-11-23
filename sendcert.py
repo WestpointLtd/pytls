@@ -63,11 +63,9 @@ def process_response(sock):
         record = read_tls_record(sock)
         
         if record.content_type() == TLSRecord.Handshake:
-            # A single handshake record can contain multiple handshake messages
-            processed_bytes = 0
-            while processed_bytes < record.message_length():
-                message = HandshakeMessage.from_bytes(record.message()[processed_bytes:])
+            messages = record.handshake_messages()
 
+            for message in messages:
                 if message.message_type() == message.ServerHello:
                     print 'handshake:%s(%x)|' % (message.message_types[message.message_type()], message.server_version())
                 else:
@@ -75,8 +73,6 @@ def process_response(sock):
 
                 if message.message_type() == HandshakeMessage.ServerHelloDone:
                     got_done = True
-
-                processed_bytes += message.message_length() + 4
 
                 if got_done:
                     continue
