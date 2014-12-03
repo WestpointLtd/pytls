@@ -115,6 +115,38 @@ class ClientHelloMessage(HandshakeMessage):
         return HandshakeMessage.create(HandshakeMessage.ClientHello, message)
 
 
+class ClientHelloMessage3(HandshakeMessage):
+    '''
+    SSL3 version of the client hello. This one doesn't include the extensions
+    at all.
+    '''
+    
+    def __init__(self):
+        HandshakeMessage.__init__(self)
+        
+    @classmethod
+    def create(cls, client_version, random,
+               cipher_suites=[], session_id=None,
+               compression_methods=[]):
+        
+        ciphers = struct.pack('!H%dH' % len(cipher_suites),
+                              2*len(cipher_suites), *cipher_suites)
+    
+        if compression_methods:
+            raise NotImplementedError()
+        else:
+            compression = struct.pack('BB', 1, 0)
+                
+        message = struct.pack('!H32sB%ds%ds' % (len(ciphers), len(compression)),
+                              client_version,
+                              random,
+                              0, # sessionid length,
+                              ciphers,
+                              compression)
+        
+        return HandshakeMessage.create(HandshakeMessage.ClientHello, message)
+
+
 class CertificateMessage(HandshakeMessage):
 
     def __init__(self):

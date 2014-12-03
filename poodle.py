@@ -101,12 +101,12 @@ def make_hello(include_scsv):
     if include_scsv:
         ciphers += [TLS_FALLBACK_SCSV]
 
-    hello = ClientHelloMessage.create(TLSRecord.SSL3,
-                                      '01234567890123456789012345678901',
-                                      ciphers)
+    hello = ClientHelloMessage3.create(TLSRecord.SSL3,
+                                       '01234567890123456789012345678901',
+                                       ciphers)
     
     record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                              version=TLSRecord.TLS1_0,
+                              version=TLSRecord.SSL3,
                               message=hello.bytes)
 
     #hexdump(record.bytes)
