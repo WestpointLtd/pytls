@@ -322,6 +322,7 @@ TLS_ECDHE_ECDSA_WITH_AES_256_CCM_8 = 0xC0AF
 
 # Special
 TLS_FALLBACK_SCSV = 0x5600
+TLS_EMPTY_RENEGOTIATION_INFO_SCSV = 0xff00
 
 cipher_suites = {
     0x0: 'TLS_NULL_WITH_NULL_NULL',
@@ -644,7 +645,8 @@ cipher_suites = {
     0xc0af: 'TLS_ECDHE_ECDSA_WITH_AES_256_CCM_8',
 
     # Special
-    0x5600: 'TLS_FALLBACK_SCSV'
+    0x5600: 'TLS_FALLBACK_SCSV',
+    0xff00: 'TLS_EMPTY_RENEGOTIATION_INFO_SCSV'
 }
 
 # Ciphers suites sent by Chrome
