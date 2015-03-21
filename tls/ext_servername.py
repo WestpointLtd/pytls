@@ -34,5 +34,5 @@ class ServerNameExtension(TLSExtension):
         #data = struct.pack('!HHBH%ds' % len(hostname),
         #                   len(hostname) + 5, name_length+3, name_type, name_length, hostname)
 
-        hexdump(data)
+        #hexdump(data)
         return TLSExtension.create(TLSExtension.ServerName, data)
