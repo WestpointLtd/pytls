@@ -18,8 +18,11 @@ def starttls(s, port, mode='auto'):
             mode = starttls_modes[port]
         else:
             # No starttls
-            logging.debug('Not a supported starttls port')
+            logging.debug('Not a starttls port')
             return
+
+    if mode == 'none':
+        return
 
     logging.debug('Using starttls mode %s', mode)
     
