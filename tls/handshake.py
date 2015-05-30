@@ -67,6 +67,10 @@ class HandshakeMessage(object):
             self = CertificateStatusMessage()
         elif ord(bytes[0]) == HandshakeMessage.ServerHello:
             self = ServerHelloMessage()
+        elif ord(bytes[0]) == HandshakeMessage.ServerKeyExchange:
+            self = ServerKeyExchangeMessage()
+        elif ord(bytes[0]) == HandshakeMessage.Certificate:
+            self = CertificateMessage()
         else:
             self = cls()
         self.bytes = bytes
@@ -191,6 +195,20 @@ class ServerHelloMessage(HandshakeMessage):
             return True
         else:
             return False
+
+
+class ServerKeyExchangeMessage(HandshakeMessage):
+    # Note that for now this code assumes that the Kx is DH
+
+    def __init__(self):
+        HandshakeMessage.__init__(self)
+
+    def dh_p_len_bytes(self):
+        return struct.unpack('!H', self.bytes[4:6])[0]
+
+    def dh_p_len(self):
+        return self.dh_p_len_bytes()*8
+
 
 class CertificateStatusMessage(HandshakeMessage):
 
