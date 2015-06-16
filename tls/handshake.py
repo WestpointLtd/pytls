@@ -44,6 +44,10 @@ class HandshakeMessage(object):
         h,l = struct.unpack('!BH', self.bytes[1:4])
         return l + (h << 16)
 
+    def version(self):
+        ver, = struct.unpack('!H', self.bytes[4:6])
+        return ver
+
     @classmethod
     def create(cls, message_type, message, length=-1):
         self = cls()
@@ -85,7 +89,36 @@ class ClientHelloMessage(HandshakeMessage):
     
     def __init__(self):
         HandshakeMessage.__init__(self)
-        
+
+    def random(self):
+        return self.bytes[6:38]
+
+    def session_id_length(self):
+        return ord(self.bytes[38])
+
+    # Offset of the list itself, so the length is the 2 bytes /before/
+    def cipher_suites_offset(self):
+        return self.session_id_length()+41
+
+    def cipher_suites_length(self):
+        offset = self.cipher_suites_offset()-2
+        length, = struct.unpack('!H', self.bytes[offset:offset+2])
+        return length
+
+    def cipher_suites(self):
+        start = self.cipher_suites_offset()
+        length = self.cipher_suites_length()
+        offset = 0
+        suites = []
+        while True:
+            suite, = struct.unpack('!H', self.bytes[start+offset:start+offset+2])
+            suites += [suite]
+            offset += 2
+            if offset >= length:
+                break
+
+        return suites
+
     @classmethod
     def create(cls, client_version, random,
                cipher_suites=[], session_id=None,
