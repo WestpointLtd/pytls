@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from utils import hexdump, h2bin
+from utils import *
 from starttls import *
 from ciphersuites import *
 
