@@ -5,7 +5,7 @@ import struct
 from alert import *
 from handshake import *
 
-DEBUG = 1
+DEBUG = 0
 
 class TLSRecord(object):
 

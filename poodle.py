@@ -119,6 +119,7 @@ def fallback_scsv(target, port):
 
     s.connect((target, port))
     f = s.makefile('rw', 0)
+    f = LoggedFile(f)
 
     f.write(make_hello(False))
     ssl3_no_scsv = process_response(f)
@@ -132,6 +133,7 @@ def fallback_scsv(target, port):
 
     s.connect((target, port))
     f = s.makefile('rw', 0)
+    f = LoggedFile(f)
 
     try:
         f.write(make_hello(True))

@@ -56,6 +56,7 @@ def main():
         conn, addr = s.accept()
         print 'Connection from', addr
         f = conn.makefile('rw', 0)
+        f = LoggedFile(f)
         read_hello(f)
 
 if __name__ == '__main__':

@@ -3,6 +3,7 @@
 import sys
 import socket
 import select
+import logging
 from base64 import b64decode
 from optparse import OptionParser
 
@@ -116,18 +117,25 @@ def main():
     options.add_option('-p', '--port',
                        type='int', default=443,
                        help='TCP port to test (default: 443)')
+    options.add_option('-d', '--debug', action='store_true', dest='debug',
+                       default=False,
+                       help='Print debugging messages')
 
     opts, args = options.parse_args()
 
     if len(args) < 1:
         options.print_help()
         return
+
+    if opts.debug:
+        logging.basicConfig(level=logging.DEBUG)
  
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     print 'Connecting...'
 
     s.connect((args[0], opts.port))
     f = s.makefile('rw', 0)
+    f = LoggedFile(f)
 
     sendcert(f)
  
