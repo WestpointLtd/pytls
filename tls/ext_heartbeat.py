@@ -17,17 +17,19 @@ class HeartbeatMessage(object):
         self.bytes = ''
 
     @classmethod
-    def create(cls, message_type, payload, length=-1):
+    def create(cls, message_type, payload, length=-1, padding=None):
         self = cls()
 
         if length < 0:
             length = len(payload)
 
-        # TODO: padding
-        self.bytes = struct.pack('!BH%ds' % (len(payload)),
+        if padding is None:
+            padding = '*' * 16
+        self.bytes = struct.pack('!BH%ds%ds' % (len(payload), len(padding)),
                                  message_type,
                                  length,
-                                 payload)
+                                 payload,
+                                 padding)
         return self
 
     @classmethod

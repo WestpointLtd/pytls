@@ -32,7 +32,7 @@ def make_hello():
 
 def make_heartbeat():
     heartbeat = HeartbeatMessage.create(HeartbeatMessage.HeartbeatRequest,
-                                        'X', 0x4000)
+                                        'X', 0x4000, '')
 
     record = TLSRecord.create(content_type=TLSRecord.Heartbeat,
                               version=TLSRecord.TLS1_0,

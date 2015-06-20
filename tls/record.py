@@ -5,7 +5,7 @@ import struct
 from alert import *
 from handshake import *
 
-DEBUG = 0
+DEBUG = 1
 
 class TLSRecord(object):
 
@@ -107,6 +107,8 @@ def read_tls_record(f):
         raise IOError('Unexpected EOF receiving record header - server closed connection')
 
     typ, ver, ln = struct.unpack('>BHH', hdr)
+    if DEBUG:
+        print typ, hex(ver), ln
     pay = f.read(ln)
     if pay == '':
         raise IOError('Unexpected EOF receiving record payload - server closed connection')
