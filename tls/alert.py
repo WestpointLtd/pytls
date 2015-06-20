@@ -45,6 +45,7 @@ class AlertMessage(object):
     BadCertificateStatusResponse = 113
     BadCertificateHashValue = 114
     UnknownPSKIndentity = 115
+    NoApplicationProtocol = 120
 
     alert_types = {
         0: 'CloseNotify',
@@ -77,7 +78,8 @@ class AlertMessage(object):
         112: 'UnrecognizedName',
         113: 'BadCertificateStatusResponse',
         114: 'BadCertificateHashValue',
-        115: 'UnknownPSKIndentity'
+        115: 'UnknownPSKIndentity',
+        120: 'NoApplicationProtocol'
     }
 
     def __init__(self):
