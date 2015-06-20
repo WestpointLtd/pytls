@@ -86,7 +86,7 @@ class AlertMessage(object):
         self.bytes = ''
 
     @classmethod
-    def create(cls, level=AlertMessage.Fatal, type=AlertMessage.InternalError):
+    def create(cls, level=Fatal, type=InternalError):
         self = cls()
         self.bytes = struct.pack('!BB', level, type)
 
