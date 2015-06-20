@@ -11,20 +11,22 @@ starttls_modes = {
 }
 
 def starttls(s, port, mode='auto'):
-    logging.debug('Using %d, mode %s', port, mode)
+    logger = logging.getLogger('pytls')
+
+    logger.debug('Using %d, mode %s', port, mode)
 
     if mode == 'auto':
         if starttls_modes.has_key(port):
             mode = starttls_modes[port]
         else:
             # No starttls
-            logging.debug('Not a starttls port')
+            logger.debug('Not a starttls port')
             return
 
     if mode == 'none':
         return
 
-    logging.debug('Using starttls mode %s', mode)
+    logger.debug('Using starttls mode %s', mode)
     
     BUFSIZ = 1024 # Arbitrary
 

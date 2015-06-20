@@ -20,14 +20,15 @@ def hexdump(s):
 class LoggedFile(object):
     def __init__(self, file_):
         self._file = file_
+        self.logger = logging.getLogger('pytls')
 
     def read(self, size):
         data = self._file.read(size)
-        logging.debug('READ: <<<\n'+to_hex(data)+'\n')
+        self.logger.debug('READ: <<<\n'+to_hex(data)+'\n')
         return data
 
     def write(self, data):
-        logging.debug('WRITE: >>>\n'+to_hex(data)+'\n')
+        self.logger.debug('WRITE: >>>\n'+to_hex(data)+'\n')
         return self._file.write(data)
 
     def __getattr__(self, attr):

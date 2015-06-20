@@ -1,11 +1,10 @@
 #!/usr/bin/python
 
 import struct
+import logging
 
 from alert import *
 from handshake import *
-
-DEBUG = 0
 
 class TLSRecord(object):
 
@@ -102,26 +101,26 @@ class TLSRecord(object):
 #
 
 def read_tls_record(f):
+    logger = logging.getLogger('pytls')
+
     hdr = f.read(5)
     if hdr == '':
         raise IOError('Unexpected EOF receiving record header - server closed connection')
 
     typ, ver, ln = struct.unpack('>BHH', hdr)
-    if DEBUG:
-        print typ, hex(ver), ln
+    logger.debug('%d\t0x%x\t%d', typ, ver, ln)
+
     pay = f.read(ln)
     if pay == '':
         raise IOError('Unexpected EOF receiving record payload - server closed connection')
 
-    if DEBUG:
-        print ' ... received message: type = %d (%s), ver = %04x, length = %d' \
-            % (typ, TLSRecord.content_types.get(typ, 'UNKNOWN!'), ver, len(pay))
+
+    logger.debug(' ... received message: type = %d (%s), ver = %04x, length = %d',
+                 typ, TLSRecord.content_types.get(typ, 'UNKNOWN!'), ver, len(pay))
 
     if typ == TLSRecord.Handshake:
-        if DEBUG:
-            print '>>> Handshake message: %s' % (HandshakeMessage.message_types.get(ord(pay[0]), 'UNKNOWN!'))
+        logger.debug('>>> Handshake message: %s', HandshakeMessage.message_types.get(ord(pay[0]), 'UNKNOWN!'))
     elif typ == TLSRecord.Alert:
-        if DEBUG:
-            print '>>> Alert message: %s' % (AlertMessage.alert_types.get(ord(pay[1]), 'UNKNOWN!'))
+        logger.debug('>>> Alert message: %s', AlertMessage.alert_types.get(ord(pay[1]), 'UNKNOWN!'))
 
     return TLSRecord.from_bytes(hdr+pay)
