@@ -15,7 +15,7 @@ class AlertMessage(object):
         
     # Alert types
     CloseNotify = 0
-    UnexpectedMesage = 10
+    UnexpectedMessage = 10
     BadRecordMac = 20
     DecryptionFailed = 21
     RecordOveflow = 22
@@ -48,7 +48,7 @@ class AlertMessage(object):
 
     alert_types = {
         0: 'CloseNotify',
-        10: 'UnexpectedMesage',
+        10: 'UnexpectedMessage',
         20: 'BadRecordMac',
         21: 'DecryptionFailed',
         22: 'RecordOveflow',
