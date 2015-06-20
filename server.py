@@ -21,7 +21,7 @@ def dump_hello(record):
             print 'Cipher Suites Length (bytes):', message.cipher_suites_length()
             print 'Cipher Suites:'
             for suite in message.cipher_suites():
-                print '0x%04x' % suite, cipher_suites[suite]
+                print '0x%04x' % suite, cipher_suites.get(suite, 'UNKNOWN')
 
 def read_hello(f):
     record = read_tls_record(f)
