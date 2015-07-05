@@ -14,7 +14,7 @@ def make_hello(version, cipher):
                                       [cipher])
     
     record = TLSRecord.create(content_type=TLSRecord.Handshake,
-                              version=TLSRecord.TLS1_0,
+                              version=version,
                               message=hello.bytes)
 
     #hexdump(record.bytes)
@@ -91,15 +91,19 @@ def main():
     if opts.debug:
         logging.basicConfig(level=logging.DEBUG)
 
-    supported = set()
-
     for version in [TLSRecord.SSL3, TLSRecord.TLS1_0, TLSRecord.TLS1_1, TLSRecord.TLS1_2 ]:
+        supported = set()
+
         for cipher in cipher_suites.keys():
             if test_cipher(args[0], opts.port, version, cipher):
                 supported.add(cipher)
+        
+        print 'TLS Version:', TLSRecord.tls_versions[version]
+        print
 
-    for cipher in supported:
-        print cipher_suites.get(cipher, 'UNKNOWN!'), hex(cipher)
+        for cipher in supported:
+            print cipher_suites.get(cipher, 'UNKNOWN!'), hex(cipher)
+        print
 
 
  
