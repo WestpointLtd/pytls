@@ -94,24 +94,31 @@ def dhprimes(f):
 
     print 'Waiting for Server Key Exchange...'
     while True:
-        record = read_tls_record(f)
+        try:
+            record = read_tls_record(f)
+        except Exception, e:
+            logging.warning('Unable to read record, %s', str(e))
+            return False
 
         # Look for server hello message.
         if record.content_type() == TLSRecord.Handshake:
-            message = HandshakeMessage.from_bytes(record.message())
-            if message.message_type() == HandshakeMessage.ServerHelloDone:
-                print 'Got server hello done without key exchange...'
-                break
-            elif message.message_type() == HandshakeMessage.ServerKeyExchange:
-                print 'Got server key exchange, prime p length is', message.dh_p_len()
-                break
+            messages = record.handshake_messages()
+
+            for message in messages:
+                message = HandshakeMessage.from_bytes(record.message())
+                if message.message_type() == HandshakeMessage.ServerHelloDone:
+                    print 'Got server hello done without key exchange...'
+                    break
+                elif message.message_type() == HandshakeMessage.ServerKeyExchange:
+                    print 'Got server key exchange, prime p length is', message.dh_p_len()
+                    break
         elif record.content_type() == TLSRecord.Alert:
             alert = AlertMessage.from_bytes(record.message())
             print alert
             if alert.alert_level() == AlertMessage.Fatal:
                 raise IOError('Server sent a fatal alert')
-        else:
-            print 'Record received type %d' % (record.content_type())
+            else:
+                print 'Record received type %d' % (record.content_type())
 
     
 def main():
@@ -137,6 +144,7 @@ def main():
     print 'Connecting...'
 
     s.connect((args[0], opts.port))
+    starttls(s, opts.port, 'auto')
     f = s.makefile('rw', 0)
     f = LoggedFile(f)
 
