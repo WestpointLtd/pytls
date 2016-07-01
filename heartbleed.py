@@ -90,6 +90,8 @@ def main():
     print 'Connecting...'
 
     s.connect((args[0], opts.port))
+    starttls(s, opts.port, 'auto')
+
     f = s.makefile('rw', 0)
     f = LoggedFile(f)
 
