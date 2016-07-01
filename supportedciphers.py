@@ -22,20 +22,26 @@ def make_hello(version, cipher):
 
 
 def supports_cipher(f, version, cipher):
-    logging.debug('Sending Client Hello for %d...', cipher)
+    logging.debug('Sending Client Hello for %d, version %s...', cipher, hex(version))
     f.write(make_hello(version, cipher))
 
     logging.debug('Waiting for ServerHello...')
     while True:
-        record = read_tls_record(f)
+        try:
+            record = read_tls_record(f)
+        except Exception, e:
+            logging.warning('Unable to read record, %s', str(e))
+            return False
 
         # Look for server hello message.
         if record.content_type() == TLSRecord.Handshake:
-            message = HandshakeMessage.from_bytes(record.message())
-            if message.message_type() == HandshakeMessage.ServerHello:
-                logging.debug('Got server hello...')
-                logging.debug('Version: %s, %s', TLSRecord.tls_versions.get(message.server_version(), 'UNKNOWN!'), \
-                              hex(message.server_version()))
+            messages = record.handshake_messages()
+
+            for message in messages:
+                if message.message_type() == HandshakeMessage.ServerHello:
+                    logging.debug('Got server hello...')
+                    logging.debug('Version: %s, %s', TLSRecord.tls_versions.get(message.server_version(), 'UNKNOWN!'), \
+                                  hex(message.server_version()))
 
                 selected_cipher = message.cipher_suite()
                 if selected_cipher == cipher:
@@ -57,19 +63,25 @@ def supports_cipher(f, version, cipher):
             return False
 
 def test_cipher(hostname, port, version, cipher):
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    logging.debug('Connecting...')
-
-    s.settimeout(5)
-    s.connect((hostname, port))
-    f = s.makefile('rw', 0)
-    #f = LoggedFile(f)
-
     try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        logging.debug('Connecting...')
+
+        s.settimeout(5)
+        s.connect((hostname, port))
+        starttls(s, port, 'auto')
+
+        f = s.makefile('rw', 0)
+        f = LoggedFile(f)
+
         return supports_cipher(f, version, cipher)
+    except socket.timeout:
+        logging.debug('Timeout')
+        return False
     finally:
-        f.close()
-        s.close()
+        pass
+        #f.close()
+        #s.close()
 
 
 def main():
