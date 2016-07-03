@@ -26,6 +26,15 @@ def test_ssl2(hostname, port):
 
     f.write(make_hello())
 
+    record = read_ssl2_record(f)
+    message = SSL2HandshakeMessage.from_bytes(record.message())
+    print 'Message Type:\t', message.message_types.get(message.message_type(), 'Uknown'), message.message_type()
+    print 'Version:\t', hex(message.server_version())
+
+    print 'Ciphers:'
+    for cipher in message.cipher_specs():
+        print '\t\t',ssl2.cipher_suites.get(cipher, 'Unknown'), hex(cipher)
+
 def main():
     options = OptionParser(usage='%prog server [options]',
                            description='Test for Python SSL')
