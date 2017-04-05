@@ -9,7 +9,9 @@ IDEA_128_CBC_WITH_MD5 = 0x050080
 DES_64_CBC_WITH_MD5 = 0x060040
 DES_192_EDE3_CBC_WITH_MD5 = 0x0700C0
 
-cipher_suites = {
+# TODO: tls\ciphersuites.py also defines the variable "cipher_suites" and uses a different keying system
+# "from tls import *" will overwite one of them.
+ssl2_cipher_suites = {
     RC4_128_WITH_MD5: 'RC4_128_WITH_MD5',
     RC4_128_EXPORT40_WITH_MD5: 'RC4_128_EXPORT40_WITH_MD5',
     RC2_128_CBC_WITH_MD5: 'RC2_128_CBC_WITH_MD5',
